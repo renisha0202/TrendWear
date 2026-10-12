@@ -123,6 +123,15 @@ img {
   opacity: 0.6;
 }
 
+.account-link {
+  gap: 6px;
+}
+
+.account-greeting {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
 .icon-btn:focus-visible,
 .wishlist-btn:focus-visible,
 .quick-add:focus-visible,
@@ -490,7 +499,8 @@ img {
 }
 
 .shop-controls select,
-.account-form input {
+.account-form input,
+.account-form select {
   min-height: 42px;
   min-width: 190px;
   padding: 0 12px;
@@ -668,10 +678,26 @@ img {
   width: min(420px, 100%);
 }
 
+.account-form select {
+  width: min(420px, 100%);
+}
+
 .form-message {
   color: #5f6658;
   font-size: 12px;
   line-height: 1.6;
+}
+
+.account-mode-toggle {
+  margin-top: 18px;
+  padding: 0 0 4px;
+  border: 0;
+  border-bottom: 1px solid #aaa39b;
+  background: transparent;
+  color: #393530;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
 }
 
 .cart-page > h1 {
@@ -942,6 +968,20 @@ img {
   color: #486047;
 }
 
+.checkout-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #a33b32;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.checkout-error a {
+  color: #171717;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .checkout-empty {
   max-width: 560px;
 }
@@ -1127,6 +1167,10 @@ img {
   .nav-actions .icon-btn svg {
     width: 18px;
     height: 18px;
+  }
+
+  .account-greeting {
+    font-size: 9px;
   }
 
   .mobile-menu-btn {

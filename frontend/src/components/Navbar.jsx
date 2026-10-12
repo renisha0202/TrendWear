@@ -13,7 +13,7 @@ import { useStore } from "../useStore";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { cart, wishlist } = useStore();
+  const { cart, wishlist, user } = useStore();
   const cartQuantity = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
@@ -46,8 +46,14 @@ function Navbar() {
             <Heart size={20} />
             {wishlist.length > 0 && <span className="cart-count">{wishlist.length}</span>}
           </Link>
-          <Link to="/account" className="icon-btn" aria-label="Account" title="Account">
+          <Link
+            to="/account"
+            className="icon-btn account-link"
+            aria-label={user ? `Account, signed in as ${user.name}` : "Account"}
+            title="Account"
+          >
             <UserRound size={20} />
+            {user && <span className="account-greeting">Hi, {user.name}</span>}
           </Link>
           <Link
             to="/cart"

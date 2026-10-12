@@ -1,11 +1,32 @@
+import { useState } from "react";
 import { Heart, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../useStore";
 
 function ProductCard({ product }) {
   const navigate = useNavigate();
-  const { addToCart, wishlist, toggleWishlist } = useStore();
+  const { addToCart, wishlist, toggleWishlist, storeError } = useStore();
+  const [actionMessage, setActionMessage] = useState("");
+  const [adding, setAdding] = useState(false);
   const isWishlisted = wishlist.some((item) => item.id === product.id);
+
+  const handleAdd = async () => {
+    if (adding) return;
+    setAdding(true);
+    setActionMessage("");
+    const succeeded = await addToCart(product);
+    setAdding(false);
+    if (succeeded) {
+      window.alert(`${product.name} added to cart successfully!`);
+    } else {
+      setActionMessage(storeError || "Could not add this product to your cart.");
+    }
+  };
+
+  const handleWishlist = async () => {
+    const succeeded = await toggleWishlist(product);
+    setActionMessage(succeeded ? "" : storeError || "Could not update your wishlist.");
+  };
 
   return (
     <article className="product-card">
@@ -28,7 +49,7 @@ function ProductCard({ product }) {
           className={`wishlist-btn ${isWishlisted ? "active" : ""}`}
           aria-label={`${isWishlisted ? "Remove from" : "Add to"} wishlist: ${product.name}`}
           aria-pressed={isWishlisted}
-          onClick={() => toggleWishlist(product)}
+          onClick={handleWishlist}
         >
           <Heart
             size={19}
@@ -40,16 +61,10 @@ function ProductCard({ product }) {
           type="button"
           className="quick-add"
           aria-label={`Add ${product.name} to cart`}
-          onClick={() => {
-            if (addToCart(product)) {
-              window.setTimeout(
-                () => window.alert(`${product.name} added to cart successfully!`),
-                0
-              );
-            }
-          }}
+          disabled={adding}
+          onClick={handleAdd}
         >
-          Add to Cart
+          {adding ? "Adding…" : "Add to Cart"}
         </button>
       </div>
 
@@ -79,6 +94,7 @@ function ProductCard({ product }) {
             Buy Now
           </button>
         </div>
+        {actionMessage && <p className="product-action-message" role="status">{actionMessage}</p>}
       </div>
     </article>
   );

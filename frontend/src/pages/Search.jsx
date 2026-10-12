@@ -1,15 +1,13 @@
 import { Search } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-import { products } from "../products";
+import { useProducts } from "../hooks/useProducts";
 
 function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
   const normalizedQuery = query.trim().toLowerCase();
-  const results = products.filter((product) =>
-    `${product.name} ${product.category}`.toLowerCase().includes(normalizedQuery)
-  );
+  const { products: results, loading, error } = useProducts({ q: query });
 
   return (
     <main className="section search-page">
@@ -26,12 +24,12 @@ function SearchPage() {
           autoFocus
         />
       </label>
-      {normalizedQuery ? <p className="search-count" role="status">{results.length} {results.length === 1 ? "piece" : "pieces"} found</p> : <p className="search-count">Explore all of our considered pieces.</p>}
-      {results.length > 0 ? (
+      {loading ? <p className="search-count" role="status">Searching…</p> : error ? <p className="search-count" role="alert">{error}</p> : normalizedQuery ? <p className="search-count" role="status">{results.length} {results.length === 1 ? "piece" : "pieces"} found</p> : <p className="search-count">Explore all of our considered pieces.</p>}
+      {!loading && !error && results.length > 0 ? (
         <div className="product-grid">
           {results.map((product) => <ProductCard key={product.id} product={product} />)}
         </div>
-      ) : (
+      ) : !loading && !error && (
         <p className="empty-state">No pieces match “{query}”. Try another name or category.</p>
       )}
     </main>

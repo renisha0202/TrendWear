@@ -4,10 +4,10 @@ import { useStore } from "../useStore";
 
 function Cart() {
   const navigate = useNavigate();
-  const { cart, changeQuantity, removeFromCart } = useStore();
+  const { cart, changeQuantity, removeFromCart, storeError } = useStore();
 
-  const handleRemove = (item) => {
-    if (removeFromCart(item.id)) {
+  const handleRemove = async (item) => {
+    if (await removeFromCart(item.id)) {
       window.setTimeout(
         () => window.alert(`${item.name} removed from cart successfully!`),
         0
@@ -36,6 +36,7 @@ function Cart() {
     <main className="section cart-page">
       <p className="eyebrow dark-eyebrow">YOUR SELECTION</p>
       <h1>Your Shopping Bag</h1>
+      {storeError && <p className="empty-state" role="alert">{storeError}</p>}
 
       {cart.map((item) => (
         <article
@@ -67,6 +68,7 @@ function Cart() {
               type="button"
               onClick={() => changeQuantity(item.id, 1)}
               aria-label="Increase quantity"
+              disabled={item.quantity >= 99}
             >
               <Plus size={16} />
             </button>
@@ -82,7 +84,7 @@ function Cart() {
             <button
               type="button"
               className="cart-item-buy-now"
-              onClick={() => navigate("/checkout", { state: { product: item, quantity: item.quantity } })}
+              onClick={() => navigate("/checkout", { state: { product: item, quantity: item.quantity, fromCart: true } })}
             >
               Buy Now
             </button>

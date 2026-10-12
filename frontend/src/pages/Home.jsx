@@ -1,9 +1,11 @@
 
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-import { products } from "../products";
+import { useProducts } from "../hooks/useProducts";
 
 function Home() {
+  const { products, loading, error } = useProducts({ limit: 8 });
+
   return (
     <main>
 
@@ -63,14 +65,17 @@ function Home() {
           </Link>
         </div>
 
-        <div className="product-grid">
+        {loading && <p className="empty-state" role="status">Loading the collection…</p>}
+        {error && <p className="empty-state" role="alert">{error}</p>}
+        {!loading && !error && products.length === 0 && <p className="empty-state">No products are available right now.</p>}
+        {!loading && !error && products.length > 0 && <div className="product-grid">
           {products.map((product) => (
             <ProductCard
-  key={product.id}
-  product={product}
-/>
+              key={product.id}
+              product={product}
+            />
           ))}
-        </div>
+        </div>}
       </section>
 
       <section className="editorial section" id="about">
