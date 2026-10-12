@@ -4,6 +4,9 @@ import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
 import { ApiError } from "../utils/ApiError.js";
 
+const isDevelopment = process.env.NODE_ENV === "development" ||
+  (process.env.NODE_ENV === undefined && process.execArgv.includes("--watch"));
+
 function createOrderNumber() {
   return `TW-${Date.now().toString(36).toUpperCase()}-${randomBytes(4).toString("hex").toUpperCase()}`;
 }
@@ -45,6 +48,10 @@ export async function createOrder({ userId, items, customer, idempotencyKey }) {
         });
       }
 
+      if (isDevelopment) {
+        console.info("Saving order document", { itemCount: orderItems.length });
+      }
+
       const [createdOrder] = await Order.create(
         [{
           orderNumber: createOrderNumber(),
@@ -61,6 +68,9 @@ export async function createOrder({ userId, items, customer, idempotencyKey }) {
       );
       order = createdOrder;
     });
+    if (isDevelopment) {
+      console.info("Order transaction committed", { itemCount: order.items.length });
+    }
     return { order, created: true };
   } catch (error) {
     if (error.code === 11000 && idempotencyKey) {

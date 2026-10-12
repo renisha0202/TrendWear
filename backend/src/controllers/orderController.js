@@ -12,6 +12,16 @@ export async function submitOrder(request, response) {
     throw new ApiError(400, "Idempotency-Key must be at most 100 letters, digits, dots, underscores, or hyphens.");
   }
 
+  const isDevelopment = process.env.NODE_ENV === "development" ||
+    (process.env.NODE_ENV === undefined && process.execArgv.includes("--watch"));
+  if (isDevelopment) {
+    console.info("Order creation accepted", {
+      itemCount: items.length,
+      authenticated: Boolean(request.user?._id),
+      idempotencyKeyProvided: Boolean(suppliedKey),
+    });
+  }
+
   const result = await createOrder({
     userId: request.user._id,
     items,

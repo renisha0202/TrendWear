@@ -117,7 +117,7 @@ function Checkout() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (submissionGuard.current || submitting || submittedOrder || !hasProduct) return;
+    if (submissionGuard.current || submitting || submittedOrder || !product) return;
 
     const nextErrors = Object.fromEntries(
       fields
