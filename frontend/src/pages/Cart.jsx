@@ -72,7 +72,7 @@ function Cart() {
             >
               <Plus size={16} />
             </button>
-
+<span>
             <button
               type="button"
               className="cart-remove"
@@ -81,6 +81,7 @@ function Cart() {
             >
               <Trash2 size={16} /> Remove
             </button>
+            </span>
             <button
               type="button"
               className="cart-item-buy-now"
