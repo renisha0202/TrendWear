@@ -69,6 +69,10 @@ export const api = {
       ...json("POST", body),
       ...(idempotencyKey ? { headers: { "Idempotency-Key": idempotencyKey } } : {}),
     }),
+    createRazorpayOrder: (orderNumber) =>
+      request("/orders/razorpay/create-order", json("POST", { orderNumber })),
+    verifyRazorpayPayment: (paymentData) =>
+      request("/orders/razorpay/verify-payment", json("POST", paymentData)),
     list: (params = {}) => {
       const query = new URLSearchParams(params);
       return request(`/orders${query.size ? `?${query}` : ""}`);

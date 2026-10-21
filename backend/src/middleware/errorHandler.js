@@ -31,19 +31,17 @@ export function errorHandler(error, request, response, next) {
     message = "Request body must contain valid JSON.";
   }
 
-  if (statusCode >= 500) {
-    const isDevelopment = process.env.NODE_ENV === "development" ||
-      (process.env.NODE_ENV === undefined && process.execArgv.includes("--watch"));
-    if (isDevelopment) {
-      console.error("Unhandled API error", {
-        method: request.method,
-        path: request.path,
-        name: error.name,
-        code: error.code,
-        message: error.message,
-        stack: error.stack,
-      });
-    }
+
+  if (statusCode >= 500 && !(error instanceof ApiError)) {
+    console.error("Unhandled API error:", {
+      method: request.method,
+      path: request.originalUrl,
+      name: error.name,
+      code: error.code,
+      message: error.message,
+      stack: error.stack,
+    });
+
     message = "An unexpected server error occurred.";
     details = undefined;
   }
